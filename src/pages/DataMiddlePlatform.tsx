@@ -57,13 +57,13 @@ export default function DataMiddlePlatform() {
     <div className="h-full flex flex-col space-y-6">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">数据中台 (Data Middle Platform)</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">数据中台</h1>
           <p className="text-gray-500 text-sm mt-1">集中管理数据处理流程、系统集成、数据治理及领域知识。</p>
         </div>
         <div className="flex bg-[#27272a] p-1 rounded-lg border border-white/10">
           <TabButton active={activeTab === 'processing'} onClick={() => setActiveTab('processing')}>数据处理</TabButton>
           <TabButton active={activeTab === 'integration'} onClick={() => setActiveTab('integration')}>系统对接</TabButton>
-          <TabButton active={activeTab === 'governance'} onClick={() => setActiveTab('governance')}>数据治理 (ETL)</TabButton>
+          <TabButton active={activeTab === 'governance'} onClick={() => setActiveTab('governance')}>数据治理</TabButton>
           <TabButton active={activeTab === 'knowledge'} onClick={() => setActiveTab('knowledge')}>文献与知识库</TabButton>
         </div>
       </div>
@@ -115,25 +115,25 @@ function DataGovernance() {
             name="SCADA_Raw_To_Standard" 
             source="IoT Gateway (MQTT)" 
             target="TimeSeries DB" 
-            schedule="Real-time" 
+            schedule="实时" 
             status="running" 
-            lag="45ms"
+            lag="45毫秒"
           />
           <ETLTaskRow 
             name="LIMS_Sync_Daily" 
             source="LIMS (Oracle)" 
             target="Data Warehouse" 
-            schedule="Daily 02:00" 
+            schedule="每天 02:00" 
             status="success" 
-            lastRun="Today 02:05"
+            lastRun="今天 02:05"
           />
           <ETLTaskRow 
             name="MES_Production_Sync" 
             source="MES (SQL Server)" 
             target="Data Warehouse" 
-            schedule="Hourly" 
+            schedule="每小时" 
             status="warning" 
-            lastRun="10:00 (Retrying)"
+            lastRun="10:00 (重试中)"
           />
         </div>
       </div>
@@ -146,14 +146,14 @@ function DataGovernance() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <QualityRuleCard 
             name="温度传感器异常检测" 
-            rule="Value > 1500 OR Value < 0" 
-            action="Alert & Nullify" 
+            rule="数值 > 1500 或 数值 < 0" 
+            action="报警并置空" 
             hits={12} 
           />
           <QualityRuleCard 
             name="LIMS 数据完整性校验" 
-            rule="Missing 'V2O5_Grade'" 
-            action="Block Sync" 
+            rule="缺失 'V2O5_Grade'" 
+            action="阻止同步" 
             hits={0} 
           />
         </div>
@@ -197,7 +197,7 @@ function ETLTaskRow({ name, source, target, schedule, status, lag, lastRun }: an
       <div className="text-right">
         <div className="text-xs text-gray-400">{schedule}</div>
         <div className="text-xs font-mono text-emerald-400">
-          {status === 'running' ? `Lag: ${lag}` : `Last: ${lastRun}`}
+          {status === 'running' ? `延迟: ${lag}` : `上次: ${lastRun}`}
         </div>
       </div>
     </div>
@@ -213,7 +213,7 @@ function QualityRuleCard({ name, rule, action, hits }: any) {
       </div>
       <div className="text-right">
         <div className="text-xs text-red-400 bg-red-400/10 px-2 py-0.5 rounded">{action}</div>
-        <div className="text-xs text-gray-500 mt-1">{hits} hits today</div>
+        <div className="text-xs text-gray-500 mt-1">今日命中 {hits} 次</div>
       </div>
     </div>
   );
