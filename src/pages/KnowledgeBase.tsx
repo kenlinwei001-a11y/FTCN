@@ -1,15 +1,18 @@
 import React from 'react';
 import { Network, FileText, Search, Lightbulb } from 'lucide-react';
+import { cn } from '../lib/utils';
 
-export default function KnowledgeBase() {
+export default function KnowledgeBase({ embedded = false }: { embedded?: boolean }) {
   return (
-    <div className="space-y-6 w-full h-[calc(100vh-100px)] flex flex-col">
-      <div className="flex items-center justify-between shrink-0">
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">文献与知识库 (Knowledge Base)</h1>
-          <p className="text-gray-500 text-sm mt-1">基于 Foundry 架构的领域知识管理与提取。</p>
+    <div className={cn("space-y-6 w-full flex flex-col", embedded ? "h-full" : "h-[calc(100vh-100px)]")}>
+      {!embedded && (
+        <div className="flex items-center justify-between shrink-0">
+          <div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">文献与知识库 (Knowledge Base)</h1>
+            <p className="text-gray-500 text-sm mt-1">基于 Foundry 架构的领域知识管理与提取。</p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
         <div className="lg:col-span-2 space-y-4 flex flex-col min-h-0">

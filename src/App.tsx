@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
-  FlaskConical, 
   Bot, 
-  Settings, 
-  Activity, 
+  Cpu, 
+  Database,
+  Layers,
   Menu,
   X,
-  PlayCircle,
-  Cpu,
-  BookOpen,
-  BrainCircuit
+  Activity
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import Dashboard from './pages/Dashboard';
-import KnowledgeBase from './pages/KnowledgeBase';
-import Experiments from './pages/Experiments';
 import AIPAssistant from './pages/AIPAssistant';
-import Simulation from './pages/Simulation';
 import Models from './pages/Models';
-import SkillsLibrary from './pages/SkillsLibrary';
+import DataMiddlePlatform from './pages/DataMiddlePlatform';
+import CapabilityMiddlePlatform from './pages/CapabilityMiddlePlatform';
 
-type Page = 'dashboard' | 'knowledge' | 'experiments' | 'aip' | 'simulation' | 'models' | 'skills';
+type Page = 'dashboard' | 'aip' | 'models' | 'data_middle' | 'capability_middle';
 
 export default function App() {
   const [activePage, setActivePage] = useState<Page>('dashboard');
@@ -71,28 +66,16 @@ export default function App() {
             onClick={() => setActivePage('dashboard')} 
           />
           <NavItem 
-            icon={<PlayCircle />} 
-            label="工艺推演" 
-            active={activePage === 'simulation'} 
-            onClick={() => setActivePage('simulation')} 
+            icon={<Database />} 
+            label="数据中台" 
+            active={activePage === 'data_middle'} 
+            onClick={() => setActivePage('data_middle')} 
           />
           <NavItem 
-            icon={<BrainCircuit />} 
-            label="技能能力库" 
-            active={activePage === 'skills'} 
-            onClick={() => setActivePage('skills')} 
-          />
-          <NavItem 
-            icon={<BookOpen />} 
-            label="文献与知识库" 
-            active={activePage === 'knowledge'} 
-            onClick={() => setActivePage('knowledge')} 
-          />
-          <NavItem 
-            icon={<FlaskConical />} 
-            label="实验管理" 
-            active={activePage === 'experiments'} 
-            onClick={() => setActivePage('experiments')} 
+            icon={<Layers />} 
+            label="能力中台" 
+            active={activePage === 'capability_middle'} 
+            onClick={() => setActivePage('capability_middle')} 
           />
           <NavItem 
             icon={<Cpu />} 
@@ -146,10 +129,8 @@ export default function App() {
         {/* Page Content */}
         <div className="flex-1 overflow-auto p-6">
           {activePage === 'dashboard' && <Dashboard />}
-          {activePage === 'simulation' && <Simulation />}
-          {activePage === 'skills' && <SkillsLibrary />}
-          {activePage === 'knowledge' && <KnowledgeBase />}
-          {activePage === 'experiments' && <Experiments />}
+          {activePage === 'data_middle' && <DataMiddlePlatform />}
+          {activePage === 'capability_middle' && <CapabilityMiddlePlatform />}
           {activePage === 'models' && <Models />}
           {activePage === 'aip' && <AIPAssistant />}
         </div>
@@ -158,7 +139,7 @@ export default function App() {
   );
 }
 
-function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) {
+function NavItem({ icon, label, active, onClick }: { icon: React.ReactElement, label: string, active: boolean, onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -169,7 +150,7 @@ function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, labe
           : "text-gray-400 hover:text-white hover:bg-white/5"
       )}
     >
-      {React.cloneElement(icon as React.ReactElement, { className: "h-4 w-4" })}
+      {React.cloneElement(icon as React.ReactElement<{ className?: string }>, { className: "h-4 w-4" })}
       {label}
     </button>
   );

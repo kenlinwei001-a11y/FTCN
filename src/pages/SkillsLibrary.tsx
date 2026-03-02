@@ -510,6 +510,118 @@ const INITIAL_SKILLS: Skill[] = [
     },
     version: '1.0.0',
     author: 'Finance Dept'
+  },
+  {
+    id: 'sk_rule_004',
+    name: '电炉安全操作规程',
+    entityType: 'rules_experience',
+    description: '电炉冶炼过程中的安全操作规范，包括通电、熔炼、出炉等环节的安全注意事项。',
+    input_schema: {
+      type: "object",
+      properties: {
+        stage: { type: "string", description: "操作阶段" },
+        voltage: { type: "number", description: "当前电压 (V)" }
+      },
+      required: ["stage"]
+    },
+    version: '1.0.0',
+    author: 'Safety Dept'
+  },
+  {
+    id: 'sk_rule_005',
+    name: '环保排放标准核查',
+    entityType: 'rules_experience',
+    description: '核查废气、废水排放是否符合国家及地方环保标准。',
+    input_schema: {
+      type: "object",
+      properties: {
+        pollutant_type: { type: "string", description: "污染物类型" },
+        concentration: { type: "number", description: "排放浓度" }
+      },
+      required: ["pollutant_type", "concentration"]
+    },
+    version: '1.0.0',
+    author: 'EHS Dept'
+  },
+  {
+    id: 'sk_equip_001',
+    name: '磁选效率计算',
+    entityType: 'equipment_system',
+    description: '根据磁场强度和矿物磁性，计算磁选机的回收率和精矿品位。',
+    input_schema: {
+      type: "object",
+      properties: {
+        magnetic_field: { type: "number", description: "磁场强度 (T)" },
+        feed_grade: { type: "number", description: "给矿品位 (%)" }
+      },
+      required: ["magnetic_field"]
+    },
+    version: '1.0.0',
+    author: 'Mineral Proc'
+  },
+  {
+    id: 'sk_equip_002',
+    name: '压滤机工况监控',
+    entityType: 'equipment_system',
+    description: '实时监控压滤机的压力、流量和滤饼水分，优化脱水效果。',
+    input_schema: {
+      type: "object",
+      properties: {
+        pressure: { type: "number", description: "压滤压力 (MPa)" },
+        flow_rate: { type: "number", description: "进料流量 (m3/h)" }
+      },
+      required: ["pressure"]
+    },
+    version: '1.0.0',
+    author: 'Equipment Dept'
+  },
+  {
+    id: 'sk_rule_006',
+    name: '尾矿库安全监测',
+    entityType: 'rules_experience',
+    description: '监测尾矿库坝体位移、浸润线等关键指标，评估库区安全状态。',
+    input_schema: {
+      type: "object",
+      properties: {
+        displacement: { type: "number", description: "位移量 (mm)" },
+        water_level: { type: "number", description: "水位 (m)" }
+      },
+      required: ["displacement"]
+    },
+    version: '1.0.0',
+    author: 'Safety Dept'
+  },
+  {
+    id: 'sk_sim_017',
+    name: '浸出反应动力学',
+    entityType: 'substance_reaction',
+    description: '模拟钒渣在酸性或碱性介质中的浸出反应速率和过程。',
+    input_schema: {
+      type: "object",
+      properties: {
+        temperature: { type: "number", description: "温度 (℃)" },
+        concentration: { type: "number", description: "溶剂浓度 (mol/L)" }
+      },
+      required: ["temperature"]
+    },
+    version: '1.0.0',
+    author: 'Hydrometallurgy'
+  },
+  {
+    id: 'sk_proc_002',
+    name: '沉钒结晶控制',
+    entityType: 'process_data',
+    description: '控制沉钒过程中的pH值和铵盐加入量，优化偏钒酸铵晶体粒度。',
+    input_schema: {
+      type: "object",
+      properties: {
+        ph_value: { type: "number", description: "pH值" },
+        nh4_concentration: { type: "number", description: "铵根离子浓度" }
+      },
+      required: ["ph_value"]
+    },
+    version: '1.0.0',
+    author: 'Process Dept'
   }
 ];
 
