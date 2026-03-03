@@ -658,7 +658,7 @@ export default function SkillsLibrary() {
   const handleAddNewSkill = () => {
     const newSkill: Skill = {
       id: `sk_${Date.now()}`,
-      name: '新技能 (New Skill)',
+      name: '新技能',
       entityType: activeType === 'all' ? 'substance_reaction' : activeType,
       description: '请输入技能描述...',
       input_schema: {
@@ -680,7 +680,7 @@ export default function SkillsLibrary() {
     <div className="space-y-6 w-full h-[calc(100vh-100px)] flex flex-col">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">技能能力库 (Skills Library)</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">技能能力库</h1>
           <p className="text-gray-500 text-sm mt-1">管理与核心实体类型关联的计算、模拟与控制能力。</p>
         </div>
         <button 
@@ -697,7 +697,7 @@ export default function SkillsLibrary() {
         <div className="lg:col-span-1 bg-[#27272a] border border-white/10 rounded-xl p-4 flex flex-col overflow-hidden">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">按实体类型分类</h3>
           <div className="space-y-1 overflow-y-auto flex-1 pr-2">
-            <CategoryButton type="all" label="全部技能 (All)" icon={<Book />} active={activeType === 'all'} onClick={() => setActiveType('all')} count={skills.length} />
+            <CategoryButton type="all" label="全部技能" icon={<Book />} active={activeType === 'all'} onClick={() => setActiveType('all')} count={skills.length} />
             <CategoryButton type="substance_reaction" label="物质与反应域" icon={<Package />} active={activeType === 'substance_reaction'} onClick={() => setActiveType('substance_reaction')} count={skills.filter(s => s.entityType === 'substance_reaction').length} />
             <CategoryButton type="equipment_system" label="装备与系统域" icon={<Settings />} active={activeType === 'equipment_system'} onClick={() => setActiveType('equipment_system')} count={skills.filter(s => s.entityType === 'equipment_system').length} />
             <CategoryButton type="process_data" label="过程与数据域" icon={<Activity />} active={activeType === 'process_data'} onClick={() => setActiveType('process_data')} count={skills.filter(s => s.entityType === 'process_data').length} />
@@ -847,11 +847,11 @@ function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => 
             <div className="font-mono text-sm text-gray-300">{skill.id}</div>
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-gray-500 uppercase">版本 (Version)</label>
+            <label className="text-xs text-gray-500 uppercase">版本</label>
             <div className="font-mono text-sm text-gray-300">{skill.version}</div>
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-gray-500 uppercase">创建者 (Author)</label>
+            <label className="text-xs text-gray-500 uppercase">创建者</label>
             <div className="text-sm text-gray-300 flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center text-[10px]">
                 {skill.author.charAt(0)}
@@ -864,7 +864,7 @@ function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => 
         {/* Input Schema */}
         <div>
           <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <Settings className="h-4 w-4 text-emerald-500" /> 输入架构 (Input Schema)
+            <Settings className="h-4 w-4 text-emerald-500" /> 输入架构
           </h3>
           <div className="bg-black/20 rounded-lg border border-white/5 overflow-hidden">
             <table className="w-full text-sm text-left">
@@ -907,7 +907,7 @@ function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => 
         {/* Integration Code Snippet */}
         <div>
           <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <Zap className="h-4 w-4 text-yellow-500" /> 调用示例 (Integration)
+            <Zap className="h-4 w-4 text-yellow-500" /> 调用示例
           </h3>
           <div className="bg-[#1e1e1e] rounded-lg p-4 font-mono text-xs text-gray-300 overflow-x-auto border border-white/5">
             <span className="text-purple-400">const</span> <span className="text-blue-400">result</span> = <span className="text-purple-400">await</span> foundry.skills.<span className="text-yellow-300">execute</span>(<span className="text-green-400">'{skill.name}'</span>, {'{'}
@@ -1009,7 +1009,7 @@ function SkillEditor({ skill, onSave, onCancel }: { skill: Skill, onSave: (s: Sk
 
         <div className="space-y-1 flex-1 flex flex-col min-h-[300px]">
           <div className="flex items-center justify-between">
-            <label className="text-xs text-gray-500 uppercase">Input Schema (JSON)</label>
+            <label className="text-xs text-gray-500 uppercase">输入架构 (JSON)</label>
             {jsonError && <span className="text-xs text-red-400">{jsonError}</span>}
           </div>
           <textarea 
@@ -1022,7 +1022,7 @@ function SkillEditor({ skill, onSave, onCancel }: { skill: Skill, onSave: (s: Sk
             spellCheck={false}
           />
           <p className="text-[10px] text-gray-500 mt-1">
-            Define the input parameters using JSON Schema format (properties, type, required).
+            使用 JSON Schema 格式定义输入参数（properties, type, required）。
           </p>
         </div>
 

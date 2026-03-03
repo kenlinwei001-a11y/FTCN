@@ -3,8 +3,9 @@ import { Database, Server, Link, CheckCircle, AlertCircle, RefreshCw, FileText, 
 import { cn } from '../lib/utils';
 import DataProcessing from './DataProcessing';
 import KnowledgeBase from './KnowledgeBase';
+import DataOntology from './DataOntology';
 
-type Tab = 'processing' | 'integration' | 'governance' | 'knowledge';
+type Tab = 'processing' | 'integration' | 'governance' | 'knowledge' | 'ontology';
 
 interface System {
   id: string;
@@ -64,6 +65,7 @@ export default function DataMiddlePlatform() {
           <TabButton active={activeTab === 'processing'} onClick={() => setActiveTab('processing')}>数据处理</TabButton>
           <TabButton active={activeTab === 'integration'} onClick={() => setActiveTab('integration')}>系统对接</TabButton>
           <TabButton active={activeTab === 'governance'} onClick={() => setActiveTab('governance')}>数据治理</TabButton>
+          <TabButton active={activeTab === 'ontology'} onClick={() => setActiveTab('ontology')}>数据本体</TabButton>
           <TabButton active={activeTab === 'knowledge'} onClick={() => setActiveTab('knowledge')}>文献与知识库</TabButton>
         </div>
       </div>
@@ -72,6 +74,7 @@ export default function DataMiddlePlatform() {
         {activeTab === 'processing' && <DataProcessing />}
         {activeTab === 'integration' && <SystemIntegration />}
         {activeTab === 'governance' && <DataGovernance />}
+        {activeTab === 'ontology' && <DataOntology />}
         {activeTab === 'knowledge' && <KnowledgeBase embedded={true} />}
       </div>
     </div>
@@ -100,7 +103,7 @@ function DataGovernance() {
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <MetricCard label="数据质量评分" value="94.2" change="+1.2%" icon={<ShieldCheck className="h-5 w-5 text-emerald-500" />} />
-        <MetricCard label="今日 ETL 任务" value="128" subtext="2 失败" icon={<RefreshCw className="h-5 w-5 text-blue-500" />} />
+        <MetricCard label="今日数据任务" value="128" subtext="2 失败" icon={<RefreshCw className="h-5 w-5 text-blue-500" />} />
         <MetricCard label="数据血缘节点" value="1,024" subtext="覆盖率 98%" icon={<GitBranch className="h-5 w-5 text-purple-500" />} />
         <MetricCard label="存储使用量" value="4.2 TB" subtext="可用 12 TB" icon={<Database className="h-5 w-5 text-orange-500" />} />
       </div>
@@ -108,11 +111,11 @@ function DataGovernance() {
       {/* ETL Pipelines */}
       <div className="bg-[#27272a] border border-white/10 rounded-xl p-6">
         <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-          <Activity className="h-4 w-4 text-emerald-500" /> 核心 ETL 任务监控
+          <Activity className="h-4 w-4 text-emerald-500" /> 核心数据任务监控
         </h3>
         <div className="space-y-4">
           <ETLTaskRow 
-            name="SCADA_Raw_To_Standard" 
+            name="SCADA原始数据标准化" 
             source="IoT Gateway (MQTT)" 
             target="TimeSeries DB" 
             schedule="实时" 
@@ -120,7 +123,7 @@ function DataGovernance() {
             lag="45毫秒"
           />
           <ETLTaskRow 
-            name="LIMS_Sync_Daily" 
+            name="LIMS每日同步" 
             source="LIMS (Oracle)" 
             target="Data Warehouse" 
             schedule="每天 02:00" 
@@ -128,7 +131,7 @@ function DataGovernance() {
             lastRun="今天 02:05"
           />
           <ETLTaskRow 
-            name="MES_Production_Sync" 
+            name="MES生产数据同步" 
             source="MES (SQL Server)" 
             target="Data Warehouse" 
             schedule="每小时" 

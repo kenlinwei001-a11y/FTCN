@@ -16,7 +16,7 @@ export default function AIPAssistant() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "您好。我是钒钛中试平台 AIP 智能助手。我可以访问本体知识库、实时遥测数据和历史实验数据。今天我能为您优化工艺做些什么？",
+      content: "您好。我是钒钛中试平台智能助手。我可以访问本体知识库、实时遥测数据和历史实验数据。今天我能为您优化工艺做些什么？",
       timestamp: new Date()
     }
   ]);
@@ -83,7 +83,7 @@ export default function AIPAssistant() {
       console.error(error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: "连接 AIP 核心时出错。请检查您的网络连接。", 
+        content: "连接智能助手核心时出错。请检查您的网络连接。", 
         timestamp: new Date() 
       }]);
     } finally {
@@ -112,7 +112,7 @@ export default function AIPAssistant() {
               <Sparkles className="h-4 w-4 text-emerald-500" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white">AIP 工艺助手</h2>
+              <h2 className="text-sm font-bold text-white">工艺助手</h2>
               <p className="text-xs text-emerald-500 flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"/>
                 已连接本体库与实时流

@@ -52,7 +52,7 @@ interface Model {
 const MOCK_MODELS: Model[] = [
   {
     id: 'm_vanadium_recovery',
-    name: '钒回收率预测模型 (Vanadium Recovery)',
+    name: '钒回收率预测模型',
     type: 'XGBoost Regression',
     category: 'process',
     status: 'active',
@@ -62,18 +62,18 @@ const MOCK_MODELS: Model[] = [
     metrics: [
       { name: 'R²', value: '0.94', trend: 'up' },
       { name: 'MAE', value: '1.2%', trend: 'down' },
-      { name: 'Inference Time', value: '45ms' }
+      { name: '推理时间', value: '45ms' }
     ],
     parameters: [
-      { id: 'p_temp_coeff', name: '温度系数 (Temp Coeff)', value: 0.85, unit: '-', description: '反应温度对回收率的权重', isEditable: true },
-      { id: 'p_acid_conc', name: '酸浓阈值 (Acid Threshold)', value: 15.5, unit: '%', description: '最佳浸出酸浓度基准', isEditable: true },
-      { id: 'p_leach_time', name: '浸出时间 (Leaching Time)', value: 120, unit: 'min', description: '标准反应时长', isEditable: true }
+      { id: 'p_temp_coeff', name: '温度系数', value: 0.85, unit: '-', description: '反应温度对回收率的权重', isEditable: true },
+      { id: 'p_acid_conc', name: '酸浓阈值', value: 15.5, unit: '%', description: '最佳浸出酸浓度基准', isEditable: true },
+      { id: 'p_leach_time', name: '浸出时间', value: 120, unit: 'min', description: '标准反应时长', isEditable: true }
     ],
     formula: 'Recovery = f(Temp, Acid, Time, Agitation) * η_efficiency'
   },
   {
     id: 'm_kiln_control',
-    name: '回转窑温度控制 (Kiln MPC)',
+    name: '回转窑温度控制',
     type: 'Model Predictive Control',
     category: 'control',
     status: 'active',
@@ -81,19 +81,19 @@ const MOCK_MODELS: Model[] = [
     lastUpdated: '2024-03-14 09:15',
     description: '多变量预测控制模型，用于维持回转窑各温区温度稳定，减少燃料消耗。',
     metrics: [
-      { name: 'Control Error', value: '±5°C', trend: 'down' },
-      { name: 'Response Time', value: '2s' },
-      { name: 'Stability', value: '99.8%' }
+      { name: '控制误差', value: '±5°C', trend: 'down' },
+      { name: '响应时间', value: '2s' },
+      { name: '稳定性', value: '99.8%' }
     ],
     parameters: [
-      { id: 'p_horizon', name: '预测时域 (Prediction Horizon)', value: 30, unit: 'steps', description: '模型向前预测的步数', isEditable: true },
+      { id: 'p_horizon', name: '预测时域', value: 30, unit: 'steps', description: '模型向前预测的步数', isEditable: true },
       { id: 'p_weight_q', name: '状态权重 Q', value: 10.0, unit: '-', description: '温度偏差的惩罚权重', isEditable: true },
       { id: 'p_weight_r', name: '控制权重 R', value: 0.5, unit: '-', description: '控制量变化的惩罚权重', isEditable: true }
     ]
   },
   {
     id: 'm_slag_vision',
-    name: '钛渣品位图像识别 (Slag Vision)',
+    name: '钛渣品位图像识别',
     type: 'CNN (ResNet-50)',
     category: 'vision',
     status: 'training',
@@ -101,18 +101,18 @@ const MOCK_MODELS: Model[] = [
     lastUpdated: '2024-03-16 11:00',
     description: '通过传送带摄像头实时采集图像，识别钛渣外观特征以判断品位等级。',
     metrics: [
-      { name: 'Accuracy', value: '88.5%', trend: 'up' },
+      { name: '准确率', value: '88.5%', trend: 'up' },
       { name: 'F1 Score', value: '0.87' },
       { name: 'FPS', value: '24' }
     ],
     parameters: [
-      { id: 'p_conf_thresh', name: '置信度阈值 (Confidence)', value: 0.75, unit: '-', description: '判定分类的最低置信度', isEditable: true },
+      { id: 'p_conf_thresh', name: '置信度阈值', value: 0.75, unit: '-', description: '判定分类的最低置信度', isEditable: true },
       { id: 'p_roi_crop', name: 'ROI 裁剪区域', value: 'Center-50%', unit: '-', description: '图像处理关注区域', isEditable: false }
     ]
   },
   {
     id: 'm_device_health',
-    name: '关键设备故障预警 (Device Health)',
+    name: '关键设备故障预警',
     type: 'Isolation Forest',
     category: 'maintenance',
     status: 'active',
@@ -120,9 +120,9 @@ const MOCK_MODELS: Model[] = [
     lastUpdated: '2024-03-10 16:45',
     description: '监测破碎机与泵组的振动、电流数据，提前发现异常模式以预防停机。',
     metrics: [
-      { name: 'Precision', value: '92%' },
-      { name: 'Recall', value: '89%' },
-      { name: 'False Alarm Rate', value: '<1%', trend: 'down' }
+      { name: '精确率', value: '92%' },
+      { name: '召回率', value: '89%' },
+      { name: '误报率', value: '<1%', trend: 'down' }
     ],
     parameters: [
       { id: 'p_vib_limit', name: '振动报警限值', value: 4.5, unit: 'mm/s', description: '触发预警的振动幅值', isEditable: true },
@@ -131,7 +131,7 @@ const MOCK_MODELS: Model[] = [
   },
   {
     id: 'm_energy_opt',
-    name: '能耗优化调度 (Energy Opt)',
+    name: '能耗优化调度',
     type: 'Reinforcement Learning',
     category: 'energy',
     status: 'offline',
@@ -139,8 +139,8 @@ const MOCK_MODELS: Model[] = [
     lastUpdated: '2024-02-28 10:00',
     description: '根据分时电价和生产计划，动态调整高能耗设备的运行时间。',
     metrics: [
-      { name: 'Cost Saving', value: '15%' },
-      { name: 'Schedule Score', value: '9.2/10' }
+      { name: '成本节约', value: '15%' },
+      { name: '调度评分', value: '9.2/10' }
     ],
     parameters: [
       { id: 'p_peak_price', name: '峰时电价', value: 1.2, unit: 'CNY/kWh', description: '高峰时段电价设置', isEditable: true },
@@ -183,7 +183,7 @@ export default function Models() {
     <div className="h-full flex flex-col space-y-6">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">模型管理 (Model Management)</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">模型管理</h1>
           <p className="text-gray-500 text-sm mt-1">管理钒钛中试平台的 AI 模型、控制算法及优化策略。</p>
         </div>
         <div className="flex items-center gap-2">
@@ -245,7 +245,7 @@ export default function Models() {
                 <p className="text-gray-400 text-sm">{selectedModel.description}</p>
               </div>
               <div className="text-right">
-                <div className="text-xs text-gray-500 mb-1">Last Updated</div>
+                <div className="text-xs text-gray-500 mb-1">最后更新</div>
                 <div className="text-sm font-mono text-gray-300">{selectedModel.lastUpdated}</div>
               </div>
             </div>
@@ -328,7 +328,7 @@ export default function Models() {
 
             {selectedModel.formula && (
               <div className="mt-6 p-4 bg-emerald-900/10 border border-emerald-500/10 rounded-lg">
-                <h4 className="text-xs font-bold text-emerald-500/80 mb-2 uppercase tracking-wider">Core Logic / Formula</h4>
+                <h4 className="text-xs font-bold text-emerald-500/80 mb-2 uppercase tracking-wider">核心逻辑 / 公式</h4>
                 <p className="text-xs text-gray-400 font-mono">
                   {selectedModel.formula}
                 </p>

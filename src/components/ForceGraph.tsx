@@ -62,6 +62,8 @@ export default function ForceGraph({ nodes, links, width = 800, height = 600 }: 
       .force("center", d3.forceCenter(dimensions.width / 2, dimensions.height / 2))
       .force("collide", d3.forceCollide().radius(30));
 
+    const g = svg.append("g");
+
     // Zoom behavior
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 4])
@@ -70,8 +72,6 @@ export default function ForceGraph({ nodes, links, width = 800, height = 600 }: 
       });
 
     svg.call(zoom);
-
-    const g = svg.append("g");
 
     // Links
     const link = g.append("g")

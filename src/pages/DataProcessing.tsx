@@ -212,7 +212,7 @@ export default function DataProcessing() {
     <div className="h-full flex flex-col space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">数据处理模块 (Data Processing)</h1>
+        <h1 className="text-2xl font-bold text-white tracking-tight">数据处理模块</h1>
         <p className="text-gray-500 text-sm mt-1">建立从原始资源到知识图谱的半自动化流水线。</p>
       </div>
 
@@ -563,9 +563,9 @@ function ExtractionStage({
               </p>
             </div>
             <div className="mt-4 flex gap-2">
-              <button className="px-3 py-1.5 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded text-xs">Material</button>
-              <button className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs">Parameter</button>
-              <button className="px-3 py-1.5 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded text-xs">Component</button>
+              <button className="px-3 py-1.5 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded text-xs">材料</button>
+              <button className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs">参数</button>
+              <button className="px-3 py-1.5 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded text-xs">组件</button>
             </div>
           </div>
         )}
@@ -762,11 +762,11 @@ function GraphStage({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="text-xl font-mono text-white">{stats.nodes.toLocaleString()}</div>
-              <div className="text-[10px] text-gray-500 uppercase">Nodes</div>
+              <div className="text-[10px] text-gray-500 uppercase">节点</div>
             </div>
             <div>
               <div className="text-xl font-mono text-white">{stats.edges.toLocaleString()}</div>
-              <div className="text-[10px] text-gray-500 uppercase">Edges</div>
+              <div className="text-[10px] text-gray-500 uppercase">边</div>
             </div>
           </div>
         </div>
@@ -794,11 +794,11 @@ function GraphStage({
       <div className="grid grid-cols-2 gap-4 w-full max-w-md mb-8">
         <div className="bg-black/20 border border-white/10 p-4 rounded-lg">
           <div className="text-2xl font-mono text-white mb-1">{stats.nodes.toLocaleString()}</div>
-          <div className="text-xs text-gray-500 uppercase">Nodes</div>
+          <div className="text-xs text-gray-500 uppercase">节点</div>
         </div>
         <div className="bg-black/20 border border-white/10 p-4 rounded-lg">
           <div className="text-2xl font-mono text-white mb-1">{stats.edges.toLocaleString()}</div>
-          <div className="text-xs text-gray-500 uppercase">Edges</div>
+          <div className="text-xs text-gray-500 uppercase">边</div>
         </div>
       </div>
 

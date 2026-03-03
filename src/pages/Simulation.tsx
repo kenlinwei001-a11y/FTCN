@@ -216,7 +216,7 @@ export default function Simulation() {
     <div className="space-y-6 w-full h-[calc(100vh-100px)] flex flex-col">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">工艺推演 (Process Simulation)</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">工艺推演</h1>
           <p className="text-gray-500 text-sm mt-1">基于本体论的工艺逻辑推演与仿真。</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ export default function Simulation() {
         {/* Left Sidebar: Scenarios */}
         <div className="lg:col-span-1 bg-[#27272a] border border-white/10 rounded-xl p-4 flex flex-col overflow-hidden">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Layers className="h-4 w-4" /> 推演场景 (Scenarios)
+            <Layers className="h-4 w-4" /> 推演场景
           </h3>
           <div className="space-y-2 overflow-y-auto flex-1 pr-2">
             {SCENARIOS.map(scenario => (
@@ -406,7 +406,7 @@ export default function Simulation() {
         {/* Right Sidebar: Node Details */}
         <div className="lg:col-span-1 bg-[#27272a] border border-white/10 rounded-xl p-4 flex flex-col overflow-hidden">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <FileText className="h-4 w-4" /> 节点详情 (Details)
+            <FileText className="h-4 w-4" /> 节点详情
           </h3>
           
           {selectedNode ? (
@@ -430,7 +430,7 @@ export default function Simulation() {
 
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-gray-400 uppercase flex items-center gap-2">
-                  <Zap className="h-3 w-3 text-yellow-500" /> 关联技能 (Skills)
+                  <Zap className="h-3 w-3 text-yellow-500" /> 关联技能
                 </h4>
                 {selectedNode.skills && selectedNode.skills.length > 0 ? (
                   <div className="space-y-2">

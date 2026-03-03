@@ -146,6 +146,21 @@ export function initDb() {
     insertParam.run('VanadiumRecovery_Regression', 'beta_2', 0.5, 'coeff_pressure', 1);
     insertParam.run('VanadiumRecovery_Regression', 'beta_3', -0.1, 'coeff_feed', 1);
   }
+
+  // Seed Process Units and Equipment if empty
+  const unitCount = db.prepare('SELECT count(*) as count FROM process_units').get() as { count: number };
+  if (unitCount.count === 0) {
+    console.log('Seeding Process Units and Equipment...');
+    const insertUnit = db.prepare('INSERT INTO process_units (name, type, design_capacity, current_status) VALUES (?, ?, ?, ?)');
+    const insertEquipment = db.prepare('INSERT INTO equipment (code, model, process_unit_id, status) VALUES (?, ?, ?, ?)');
+
+    // Insert Process Unit
+    const unitResult = insertUnit.run('Rotary Kiln Unit 1', 'Pyroprocessing', 1000.0, 'active');
+    const unitId = unitResult.lastInsertRowid;
+
+    // Insert Equipment (ID will likely be 1, matching the simulation hardcoded ID)
+    insertEquipment.run('EQ-KILN-001', 'RK-2000', unitId, 'running');
+  }
 }
 
 export default db;

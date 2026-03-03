@@ -12,7 +12,7 @@ export default function CapabilityMiddlePlatform() {
     <div className="h-full flex flex-col space-y-6">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">能力中台 (Capability Middle Platform)</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">能力中台</h1>
           <p className="text-gray-500 text-sm mt-1">统一管理核心算法技能与工艺推演能力。</p>
         </div>
         <div className="flex bg-[#27272a] p-1 rounded-lg border border-white/10">
