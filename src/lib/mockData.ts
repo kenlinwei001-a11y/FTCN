@@ -38,6 +38,213 @@ export const COMPLEX_WORKFLOW_EDGES = Array.from({ length: 24 }, (_, i) => ({
 }));
 
 // --- Process Steps (10+ Steps) ---
+export const RULES_DATA = [
+  {
+    id: 'rule_001',
+    name: '氢基竖炉安全操作规程',
+    category: 'Safety',
+    description: '包含氢气系统检漏、紧急停炉、异常工况处理的标准操作程序(SOP)。',
+    version: '2.0.0',
+    content: `rules:
+  - id: check_leak
+    condition: "sensor.h2_concentration > 0.04"
+    action: "emergency_shutdown"
+    priority: "critical"
+  - id: pressure_monitor
+    condition: "pressure.furnace > 1.2 * nominal"
+    action: "open_relief_valve"
+    priority: "high"`,
+    parameters: [
+      { name: 'h2_concentration', type: 'float' },
+      { name: 'pressure.furnace', type: 'float' }
+    ],
+    references: ['sk_rule_001', 'Safety System']
+  },
+  {
+    id: 'rule_002',
+    name: '竖炉结瘤预防经验库',
+    category: 'Process',
+    description: '基于历史故障案例，提供预防竖炉内部结瘤的操作建议和预警阈值。',
+    version: '1.1.0',
+    content: `rules:
+  - id: nodulation_warning
+    condition: "temp_gradient > 50 AND pressure_drop > 20"
+    action: "alert_operator"
+    message: "Potential nodulation detected"
+  - id: temp_control
+    condition: "temp.zone_1 < 800"
+    action: "increase_gas_flow"`,
+    parameters: [
+      { name: 'temp_gradient', type: 'float' },
+      { name: 'pressure_drop', type: 'float' }
+    ],
+    references: ['sk_rule_002', 'Expert System']
+  },
+  {
+    id: 'rule_003',
+    name: '生产成本估算模型',
+    category: 'Finance',
+    description: '根据当前能源价格和原料消耗，快速估算吨铁生产成本。',
+    version: '1.0.0',
+    content: `formula:
+  cost = (electricity_price * power_consumption) + 
+         (gas_price * gas_consumption) + 
+         (ore_price * ore_consumption) + 
+         fixed_costs`,
+    parameters: [
+      { name: 'electricity_price', type: 'currency' },
+      { name: 'gas_price', type: 'currency' }
+    ],
+    references: ['sk_rule_003', 'ERP System']
+  },
+  {
+    id: 'rule_004',
+    name: '电炉安全操作规程',
+    category: 'Safety',
+    description: '电炉冶炼过程中的安全操作规范，包括通电、熔炼、出炉等环节的安全注意事项。',
+    version: '1.0.0',
+    content: `rules:
+  - id: power_on_check
+    condition: "cooling_water.flow > min_flow AND electrode.position == 'up'"
+    action: "allow_power_on"
+  - id: arc_stability
+    condition: "current.fluctuation > 10%"
+    action: "adjust_electrode"`,
+    parameters: [
+      { name: 'cooling_water.flow', type: 'float' },
+      { name: 'electrode.position', type: 'enum' }
+    ],
+    references: ['sk_rule_004', 'Safety System']
+  },
+  {
+    id: 'rule_005',
+    name: '环保排放标准核查',
+    category: 'Compliance',
+    description: '核查废气、废水排放是否符合国家及地方环保标准。',
+    version: '1.0.0',
+    content: `constraints:
+  - pollutant: "SO2"
+    limit: "35 mg/m3"
+    period: "1h_avg"
+  - pollutant: "NOx"
+    limit: "50 mg/m3"
+    period: "1h_avg"
+  - pollutant: "Particulate"
+    limit: "10 mg/m3"
+    period: "24h_avg"`,
+    parameters: [
+      { name: 'SO2_concentration', type: 'float' },
+      { name: 'NOx_concentration', type: 'float' }
+    ],
+    references: ['sk_rule_005', 'EHS System']
+  },
+  {
+    id: 'rule_006',
+    name: '尾矿库安全监测',
+    category: 'Safety',
+    description: '监测尾矿库坝体位移、浸润线等关键指标，评估库区安全状态。',
+    version: '1.0.0',
+    content: `rules:
+  - id: dam_stability
+    condition: "displacement.rate > 2mm/day"
+    action: "alert_critical"
+  - id: water_level
+    condition: "water_level > max_safe_level - 1m"
+    action: "start_drainage"`,
+    parameters: [
+      { name: 'displacement.rate', type: 'float' },
+      { name: 'water_level', type: 'float' }
+    ],
+    references: ['sk_rule_006', 'Safety System']
+  }
+];
+
+export const ALGORITHMS_DATA = [
+  {
+    id: 'alg_001',
+    name: 'PID控制回路',
+    category: 'Control',
+    description: '通用PID控制算法，用于流量、温度等过程变量的闭环控制。',
+    version: '3.0.0',
+    content: `class PID:
+    def __init__(self, kp, ki, kd, setpoint):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.setpoint = setpoint
+        self.prev_error = 0
+        self.integral = 0
+
+    def update(self, current_value, dt):
+        error = self.setpoint - current_value
+        self.integral += error * dt
+        derivative = (error - self.prev_error) / dt
+        output = (self.kp * error) + (self.ki * self.integral) + (self.kd * derivative)
+        self.prev_error = error
+        return output`,
+    parameters: [
+      { name: 'kp', type: 'float' },
+      { name: 'ki', type: 'float' },
+      { name: 'kd', type: 'float' }
+    ],
+    references: ['sk_sim_007', 'PLC System']
+  },
+  {
+    id: 'alg_002',
+    name: '多目标优化算法',
+    category: 'Optimization',
+    description: '针对还原过程中的金属化率、能耗和产量进行多目标协同优化。',
+    version: '1.2.0',
+    content: `def optimize(objectives, constraints):
+    # NSGA-II implementation placeholder
+    population = initialize_population()
+    for generation in range(MAX_GEN):
+        offspring = crossover_and_mutate(population)
+        population = select_best(population + offspring)
+    return pareto_front(population)`,
+    parameters: [
+      { name: 'objectives', type: 'list' },
+      { name: 'constraints', type: 'dict' }
+    ],
+    references: ['sk_sim_001', 'Optimization Engine']
+  },
+  {
+    id: 'alg_003',
+    name: '流量自适应控制',
+    category: 'Control',
+    description: '根据工况变化自动调整流量控制参数的自适应算法。',
+    version: '2.0.0',
+    content: `def adaptive_control(flow, target, disturbance):
+    error = target - flow
+    # Adjust gain based on error magnitude
+    gain = base_gain * (1 + abs(error) * adaptation_rate)
+    control_signal = gain * error + feed_forward(disturbance)
+    return control_signal`,
+    parameters: [
+      { name: 'flow', type: 'float' },
+      { name: 'target', type: 'float' }
+    ],
+    references: ['sk_sim_008', 'DCS System']
+  },
+  {
+    id: 'alg_004',
+    name: '反应动力学计算',
+    category: 'Simulation',
+    description: '基于未反应核模型计算钒钛磁铁矿颗粒在高温下的还原速率。',
+    version: '1.0.2',
+    content: `def reaction_rate(temp, particle_size, gas_comp):
+    k = arrhenius(temp)
+    diffusion = calc_diffusion(temp, gas_comp)
+    # Unreacted shrinking core model
+    rate = k * diffusion * (1 - conversion)**(2/3)
+    return rate`,
+    parameters: [
+      { name: 'temperature', type: 'float' },
+      { name: 'particle_size', type: 'float' }
+    ],
+    references: ['sk_001', 'Simulation Engine']
+  }
+];
 export const PROCESS_STEPS = [
   { id: 1, label: '原料进场', status: 'active' },
   { id: 2, label: '破碎筛分', status: 'active' },

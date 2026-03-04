@@ -19,9 +19,10 @@ import DataMiddlePlatform from './pages/DataMiddlePlatform';
 import CapabilityMiddlePlatform from './pages/CapabilityMiddlePlatform';
 import AgentMiddlePlatform from './pages/AgentMiddlePlatform';
 import DigitalSimulation from './pages/DigitalSimulation';
+import RulesAndAlgorithmLibrary from './pages/RulesAndAlgorithmLibrary';
 import ErrorBoundary from './components/ErrorBoundary';
 
-type Page = 'dashboard' | 'aip' | 'models' | 'data_middle' | 'capability_middle' | 'agent_middle' | 'simulation';
+type Page = 'dashboard' | 'aip' | 'models' | 'data_middle' | 'capability_middle' | 'agent_middle' | 'simulation' | 'rules_lib';
 
 export default function App() {
   const [activePage, setActivePage] = useState<Page>('dashboard');
@@ -90,6 +91,12 @@ export default function App() {
               onClick={() => setActivePage('capability_middle')} 
             />
             <NavItem 
+              icon={<Share2 />} 
+              label="规则与算法库" 
+              active={activePage === 'rules_lib'} 
+              onClick={() => setActivePage('rules_lib')} 
+            />
+            <NavItem 
               icon={<Cpu />} 
               label="模型管理" 
               active={activePage === 'models'} 
@@ -144,6 +151,7 @@ export default function App() {
             {activePage === 'data_middle' && <DataMiddlePlatform />}
             {activePage === 'agent_middle' && <AgentMiddlePlatform />}
             {activePage === 'capability_middle' && <CapabilityMiddlePlatform />}
+            {activePage === 'rules_lib' && <RulesAndAlgorithmLibrary />}
             {activePage === 'simulation' && <DigitalSimulation />}
             {activePage === 'models' && <Models />}
             {activePage === 'aip' && <AIPAssistant />}
