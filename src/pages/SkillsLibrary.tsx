@@ -817,22 +817,40 @@ function Badge({ type }: { type: EntityType }) {
   );
 }
 
+import { RULES_DATA, ALGORITHMS_DATA } from '../lib/mockData';
+
 function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => void, onDelete: () => void }) {
   const [selectedFile, setSelectedFile] = useState('skill.md');
 
-  const files = React.useMemo(() => ({
-    'skill.md': `# ${skill.name}\n\n## Description\n${skill.description}\n\n## Type\n${skill.entityType}\n\n## Author\n${skill.author}`,
-    'schema.json': JSON.stringify(skill.input_schema, null, 2),
-    'rules.yaml': `# Business Rules for ${skill.name}\n\nrules:\n  - id: rule_001\n    condition: "input.value > 0"\n    action: "proceed"\n  - id: rule_002\n    condition: "input.value <= 0"\n    action: "reject"`,
-    'workflow.yaml': `# Execution Workflow\n\nsteps:\n  - name: validate_input\n    action: validate(input)\n  - name: execute_core_logic\n    action: run_model(input)\n  - name: format_output\n    action: format(result)`,
-    'prompt.md': `You are an expert in ${skill.entityType}.\n\nTask: ${skill.description}\n\nInput:\n{{input_json}}\n\nPlease analyze the input and provide the result.`,
-    'evaluator.py': `def evaluate(result, expected):\n    """\n    Validate the result of ${skill.name}\n    """\n    assert result is not None\n    # Add specific validation logic here\n    return True`,
-    'test_cases.json': JSON.stringify([
-      { input: { param1: "test" }, expected: { success: true } },
-      { input: { param1: "invalid" }, expected: { success: false } }
-    ], null, 2),
-    'version.yaml': `version: ${skill.version}\ndependencies:\n  - python >= 3.9\n  - numpy >= 1.21\n  - pandas >= 1.3`
-  }), [skill]);
+  const files = React.useMemo(() => {
+    // Find related rules/algorithms based on skill ID or type
+    // This is a simple mock matching logic. In a real app, this would be stored in the skill data.
+    const relatedRule = RULES_DATA.find(r => skill.id.includes(r.id) || r.references.includes(skill.id));
+    const relatedAlgo = ALGORITHMS_DATA.find(a => skill.id.includes(a.id) || a.references.includes(skill.id));
+
+    let rulesContent = `# Business Rules for ${skill.name}\n\n`;
+    if (relatedRule) {
+      rulesContent += `reference: ${relatedRule.id}\nname: ${relatedRule.name}\n\n${relatedRule.content}`;
+    } else if (relatedAlgo) {
+      rulesContent += `reference: ${relatedAlgo.id}\nname: ${relatedAlgo.name}\n\n# Algorithm Implementation\n${relatedAlgo.content}`;
+    } else {
+      rulesContent += `rules:\n  - id: default_rule\n    condition: "input.valid == true"\n    action: "proceed"`;
+    }
+
+    return {
+      'skill.md': `# ${skill.name}\n\n## Description\n${skill.description}\n\n## Type\n${skill.entityType}\n\n## Author\n${skill.author}`,
+      'schema.json': JSON.stringify(skill.input_schema, null, 2),
+      'rules.yaml': rulesContent,
+      'workflow.yaml': `# Execution Workflow\n\nsteps:\n  - name: validate_input\n    action: validate(input)\n  - name: execute_core_logic\n    action: run_model(input)\n  - name: format_output\n    action: format(result)`,
+      'prompt.md': `You are an expert in ${skill.entityType}.\n\nTask: ${skill.description}\n\nInput:\n{{input_json}}\n\nPlease analyze the input and provide the result.`,
+      'evaluator.py': `def evaluate(result, expected):\n    """\n    Validate the result of ${skill.name}\n    """\n    assert result is not None\n    # Add specific validation logic here\n    return True`,
+      'test_cases.json': JSON.stringify([
+        { input: { param1: "test" }, expected: { success: true } },
+        { input: { param1: "invalid" }, expected: { success: false } }
+      ], null, 2),
+      'version.yaml': `version: ${skill.version}\ndependencies:\n  - python >= 3.9\n  - numpy >= 1.21\n  - pandas >= 1.3`
+    };
+  }, [skill]);
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#1e1e1e]">

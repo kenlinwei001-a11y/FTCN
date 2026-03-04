@@ -15,10 +15,10 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { 
   Bot, Plus, Search, MoreHorizontal, Activity, 
-  Cpu, Zap, Settings, Play, Pause, AlertCircle, ArrowLeft, Box, Database, X
+  Cpu, Zap, Settings, Play, Pause, AlertCircle, ArrowLeft, Box, Database, X, Shield, FunctionSquare
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { AGENTS, PARALLEL_WORKFLOW_NODES, PARALLEL_WORKFLOW_EDGES } from '../lib/mockData';
+import { AGENTS, PARALLEL_WORKFLOW_NODES, PARALLEL_WORKFLOW_EDGES, RULES_DATA, ALGORITHMS_DATA } from '../lib/mockData';
 
 // --- Custom Node for Read-only View ---
 const ReadOnlyNode = ({ data, selected }: NodeProps) => {
@@ -222,6 +222,7 @@ function AgentDetailView({ agent, onBack }: { agent: typeof AGENTS[0], onBack: (
   const [nodes, setNodes] = useNodesState(PARALLEL_WORKFLOW_NODES.map(n => ({...n, type: 'readOnlyNode'})));
   const [edges, setEdges, onEdgesChange] = useEdgesState(PARALLEL_WORKFLOW_EDGES);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [selectedRule, setSelectedRule] = useState<string>('');
   
   const nodeTypes = useMemo(() => ({ readOnlyNode: ReadOnlyNode }), []);
 
@@ -232,6 +233,8 @@ function AgentDetailView({ agent, onBack }: { agent: typeof AGENTS[0], onBack: (
 
   const onNodeClick = (_: React.MouseEvent, node: Node) => {
     setSelectedNode(node);
+    // Reset selection when node changes
+    setSelectedRule('');
   };
 
   const onPaneClick = () => {
@@ -337,11 +340,43 @@ function AgentDetailView({ agent, onBack }: { agent: typeof AGENTS[0], onBack: (
                 </p>
               </div>
 
+              {/* Rules and Algorithms Selection */}
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">数学模型</label>
-                <div className="mt-2 p-3 bg-black/30 rounded border border-white/10 font-mono text-xs text-gray-300">
-                  f(x) = Σ(w_i * x_i) + b <br/>
-                  y = activation(f(x))
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                  <Shield className="h-3 w-3" /> 关联规则与算法
+                </label>
+                <div className="mt-2 space-y-3">
+                  <select 
+                    value={selectedRule}
+                    onChange={(e) => setSelectedRule(e.target.value)}
+                    className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none"
+                  >
+                    <option value="">选择关联规则...</option>
+                    <optgroup label="业务规则">
+                      {RULES_DATA.map(rule => (
+                        <option key={rule.id} value={rule.id}>{rule.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="核心算法">
+                      {ALGORITHMS_DATA.map(algo => (
+                        <option key={algo.id} value={algo.id}>{algo.name}</option>
+                      ))}
+                    </optgroup>
+                  </select>
+
+                  {selectedRule && (
+                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FunctionSquare className="h-4 w-4 text-emerald-400" />
+                        <span className="text-sm font-medium text-emerald-400">
+                          {RULES_DATA.find(r => r.id === selectedRule)?.name || ALGORITHMS_DATA.find(a => a.id === selectedRule)?.name}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 line-clamp-2">
+                        {RULES_DATA.find(r => r.id === selectedRule)?.description || ALGORITHMS_DATA.find(a => a.id === selectedRule)?.description}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
