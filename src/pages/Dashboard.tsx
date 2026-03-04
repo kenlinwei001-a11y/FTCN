@@ -3,8 +3,9 @@ import { io } from 'socket.io-client';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
 } from 'recharts';
-import { Activity, Thermometer, Wind, Gauge, AlertTriangle, Zap } from 'lucide-react';
+import { Activity, Thermometer, Wind, Gauge, AlertTriangle, Zap, ArrowLeft, LayoutGrid, Server } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { AGENTS, PROCESS_STEPS } from '../lib/mockData';
 
 // Connect to socket
 const socket = io();
@@ -22,6 +23,80 @@ interface TelemetryData {
 }
 
 export default function Dashboard() {
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
+  const selectedAgent = AGENTS.find(a => a.id === selectedAgentId);
+
+  if (selectedAgent) {
+    return (
+      <ProjectDetailView 
+        agent={selectedAgent} 
+        onBack={() => setSelectedAgentId(null)} 
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-6 w-full h-full flex flex-col">
+      <div className="flex items-center justify-between shrink-0">
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+            <LayoutGrid className="h-6 w-6 text-emerald-500" />
+            数字孪生监控中心
+          </h1>
+          <p className="text-gray-500 text-sm mt-1 font-mono">
+            全厂智能体孪生项目概览 • {AGENTS.length} 个活跃项目
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto pb-6">
+        {AGENTS.map(agent => (
+          <div 
+            key={agent.id}
+            onClick={() => setSelectedAgentId(agent.id)}
+            className="bg-[#27272a] border border-white/10 rounded-xl p-6 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all cursor-pointer group flex flex-col"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className={cn(
+                "h-12 w-12 rounded-xl flex items-center justify-center border transition-colors",
+                agent.status === '运行中' ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400" :
+                agent.status === '异常' ? "bg-red-500/20 border-red-500/30 text-red-400" :
+                "bg-gray-500/20 border-gray-500/30 text-gray-400"
+              )}>
+                <Server className="h-6 w-6" />
+              </div>
+              <span className={cn(
+                "text-xs px-2 py-1 rounded-full border",
+                agent.status === '运行中' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" :
+                agent.status === '异常' ? "bg-red-500/10 border-red-500/20 text-red-400" :
+                "bg-gray-500/10 border-gray-500/20 text-gray-400"
+              )}>
+                {agent.status}
+              </span>
+            </div>
+
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+              {agent.name}
+            </h3>
+            <p className="text-sm text-gray-400 line-clamp-2 mb-4 flex-1">
+              {agent.description}
+            </p>
+
+            <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center gap-2">
+                <Activity className="h-3 w-3" />
+                <span>实时监控中</span>
+              </div>
+              <span className="font-mono">{agent.id}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectDetailView({ agent, onBack }: { agent: typeof AGENTS[0], onBack: () => void }) {
   const [data, setData] = useState<TelemetryData[]>([]);
   const [latest, setLatest] = useState<TelemetryData | null>(null);
 
@@ -50,9 +125,17 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 w-full">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">数字孪生：回转窑 A</h1>
-          <p className="text-gray-500 text-sm mt-1 font-mono">实时监控 • 批次: EXP-2024-002</p>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">数字孪生：{agent.name}</h1>
+            <p className="text-gray-500 text-sm mt-1 font-mono">实时监控 • ID: {agent.id} • {agent.type}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <span className="flex h-3 w-3 relative">
@@ -250,19 +333,25 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Process Flow Visualization (Simplified) */}
-      <div className="bg-[#27272a] border border-white/10 rounded-xl p-6">
+
+
+      {/* Process Flow Visualization (Expanded) */}
+      <div className="bg-[#27272a] border border-white/10 rounded-xl p-6 overflow-hidden">
         <h3 className="text-sm font-medium text-gray-400 mb-6">工艺流程状态</h3>
-        <div className="relative h-48 flex items-center justify-between px-12 overflow-x-auto">
-          {/* Connector Line */}
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-800 -z-10 mx-20 min-w-[600px]"></div>
-          
-          <ProcessNode label="进料" status="active" active={true} />
-          <ProcessNode label="预热" status="active" active={(latest?.temp || 0) > 400} />
-          <ProcessNode label="还原 (回转窑)" status="active" active={(latest?.temp || 0) > 800} />
-          <ProcessNode label="冷却" status="idle" active={(latest?.temp || 0) > 1000} />
-          <ProcessNode label="磁选" status="idle" active={false} />
-          <ProcessNode label="成品" status="idle" active={false} />
+        <div className="relative h-48 overflow-x-auto">
+          <div className="flex items-center justify-between min-w-[1200px] px-12 h-full relative">
+            {/* Connector Line */}
+            <div className="absolute top-1/2 left-12 right-12 h-1 bg-gray-800 -z-10"></div>
+            
+            {PROCESS_STEPS.map((step, index) => (
+              <ProcessNode 
+                key={step.id} 
+                label={step.label} 
+                status={step.status} 
+                active={index < 6} // Mock active state
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

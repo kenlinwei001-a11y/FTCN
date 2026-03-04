@@ -7,7 +7,9 @@ import {
   Layers,
   Menu,
   X,
-  Activity
+  Activity,
+  Users,
+  Share2
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import Dashboard from './pages/Dashboard';
@@ -15,9 +17,11 @@ import AIPAssistant from './pages/AIPAssistant';
 import Models from './pages/Models';
 import DataMiddlePlatform from './pages/DataMiddlePlatform';
 import CapabilityMiddlePlatform from './pages/CapabilityMiddlePlatform';
+import AgentMiddlePlatform from './pages/AgentMiddlePlatform';
+import DigitalSimulation from './pages/DigitalSimulation';
 import ErrorBoundary from './components/ErrorBoundary';
 
-type Page = 'dashboard' | 'aip' | 'models' | 'data_middle' | 'capability_middle';
+type Page = 'dashboard' | 'aip' | 'models' | 'data_middle' | 'capability_middle' | 'agent_middle' | 'simulation';
 
 export default function App() {
   const [activePage, setActivePage] = useState<Page>('dashboard');
@@ -72,6 +76,12 @@ export default function App() {
               label="数据中台" 
               active={activePage === 'data_middle'} 
               onClick={() => setActivePage('data_middle')} 
+            />
+            <NavItem 
+              icon={<Users />} 
+              label="智能体中台" 
+              active={activePage === 'agent_middle'} 
+              onClick={() => setActivePage('agent_middle')} 
             />
             <NavItem 
               icon={<Layers />} 
@@ -132,7 +142,9 @@ export default function App() {
           <div className="flex-1 overflow-auto p-6">
             {activePage === 'dashboard' && <Dashboard />}
             {activePage === 'data_middle' && <DataMiddlePlatform />}
+            {activePage === 'agent_middle' && <AgentMiddlePlatform />}
             {activePage === 'capability_middle' && <CapabilityMiddlePlatform />}
+            {activePage === 'simulation' && <DigitalSimulation />}
             {activePage === 'models' && <Models />}
             {activePage === 'aip' && <AIPAssistant />}
           </div>

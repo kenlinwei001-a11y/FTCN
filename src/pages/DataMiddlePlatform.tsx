@@ -1,7 +1,41 @@
 import React, { useState } from 'react';
 import { Database, Server, Link, CheckCircle, AlertCircle, RefreshCw, FileText, GitBranch, ShieldCheck, Activity } from 'lucide-react';
 import { cn } from '../lib/utils';
-import DataProcessing from './DataProcessing';
+import { DATASETS } from '../lib/mockData';
+
+function DataProcessing() {
+  return (
+    <div className="h-full overflow-y-auto p-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {DATASETS.map((dataset) => (
+          <div key={dataset.id} className="bg-[#27272a] border border-white/10 rounded-xl p-5 hover:border-emerald-500/50 transition-all group">
+            <div className="flex justify-between items-start mb-3">
+              <div className="p-2 bg-white/5 rounded-lg group-hover:bg-emerald-500/10 group-hover:text-emerald-500 transition-colors">
+                <Database className="h-5 w-5" />
+              </div>
+              <span className={cn(
+                "text-xs px-2 py-0.5 rounded border",
+                dataset.status === 'active' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-gray-500/10 text-gray-400 border-gray-500/20"
+              )}>
+                {dataset.status}
+              </span>
+            </div>
+            <h3 className="text-sm font-bold text-white mb-1 truncate" title={dataset.name}>{dataset.name}</h3>
+            <div className="text-xs text-gray-500 mb-4 flex items-center gap-2">
+              <span className="bg-white/5 px-1.5 py-0.5 rounded">{dataset.source}</span>
+              <span>•</span>
+              <span>{dataset.type}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs text-gray-400 border-t border-white/5 pt-3">
+              <span>Size: {dataset.size}</span>
+              <span className="font-mono opacity-50">{dataset.id}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 import KnowledgeBase from './KnowledgeBase';
 import DataOntology from './DataOntology';
 

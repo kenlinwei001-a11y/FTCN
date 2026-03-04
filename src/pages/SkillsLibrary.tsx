@@ -16,7 +16,12 @@ import {
   FileText,
   Users,
   Lightbulb,
-  Package
+  Package,
+  FileCode,
+  FileJson,
+  File,
+  Code,
+  Braces
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -813,19 +818,29 @@ function Badge({ type }: { type: EntityType }) {
 }
 
 function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => void, onDelete: () => void }) {
-  const properties = skill.input_schema.properties || {};
-  const required = skill.input_schema.required || [];
+  const [selectedFile, setSelectedFile] = useState('skill.md');
+
+  const files = React.useMemo(() => ({
+    'skill.md': `# ${skill.name}\n\n## Description\n${skill.description}\n\n## Type\n${skill.entityType}\n\n## Author\n${skill.author}`,
+    'schema.json': JSON.stringify(skill.input_schema, null, 2),
+    'rules.yaml': `# Business Rules for ${skill.name}\n\nrules:\n  - id: rule_001\n    condition: "input.value > 0"\n    action: "proceed"\n  - id: rule_002\n    condition: "input.value <= 0"\n    action: "reject"`,
+    'workflow.yaml': `# Execution Workflow\n\nsteps:\n  - name: validate_input\n    action: validate(input)\n  - name: execute_core_logic\n    action: run_model(input)\n  - name: format_output\n    action: format(result)`,
+    'prompt.md': `You are an expert in ${skill.entityType}.\n\nTask: ${skill.description}\n\nInput:\n{{input_json}}\n\nPlease analyze the input and provide the result.`,
+    'evaluator.py': `def evaluate(result, expected):\n    """\n    Validate the result of ${skill.name}\n    """\n    assert result is not None\n    # Add specific validation logic here\n    return True`,
+    'test_cases.json': JSON.stringify([
+      { input: { param1: "test" }, expected: { success: true } },
+      { input: { param1: "invalid" }, expected: { success: false } }
+    ], null, 2),
+    'version.yaml': `version: ${skill.version}\ndependencies:\n  - python >= 3.9\n  - numpy >= 1.21\n  - pandas >= 1.3`
+  }), [skill]);
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full bg-[#1e1e1e]">
       {/* Header */}
-      <div className="p-6 border-b border-white/10 flex justify-between items-start">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h2 className="text-xl font-bold text-white">{skill.name}</h2>
-            <Badge type={skill.entityType} />
-          </div>
-          <p className="text-gray-400 text-sm">{skill.description}</p>
+      <div className="p-4 border-b border-white/10 flex justify-between items-center shrink-0 bg-[#27272a]">
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-bold text-white">{skill.name}</h2>
+          <Badge type={skill.entityType} />
         </div>
         <div className="flex gap-2">
           <button onClick={onEdit} className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">
@@ -837,92 +852,58 @@ function SkillViewer({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => 
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
-        
-        {/* Info Grid */}
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-1">
-            <label className="text-xs text-gray-500 uppercase">ID</label>
-            <div className="font-mono text-sm text-gray-300">{skill.id}</div>
+      {/* File Browser Layout */}
+      <div className="flex-1 flex min-h-0">
+        {/* File List */}
+        <div className="w-64 border-r border-white/10 bg-[#252526] flex flex-col">
+          <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-white/5">
+            Project Files
           </div>
-          <div className="space-y-1">
-            <label className="text-xs text-gray-500 uppercase">版本</label>
-            <div className="font-mono text-sm text-gray-300">{skill.version}</div>
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs text-gray-500 uppercase">创建者</label>
-            <div className="text-sm text-gray-300 flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center text-[10px]">
-                {skill.author.charAt(0)}
-              </div>
-              {skill.author}
-            </div>
-          </div>
-        </div>
-
-        {/* Input Schema */}
-        <div>
-          <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <Settings className="h-4 w-4 text-emerald-500" /> 输入架构
-          </h3>
-          <div className="bg-black/20 rounded-lg border border-white/5 overflow-hidden">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-white/5 text-gray-400 text-xs uppercase">
-                <tr>
-                  <th className="px-4 py-3 font-medium">参数名</th>
-                  <th className="px-4 py-3 font-medium">类型</th>
-                  <th className="px-4 py-3 font-medium">必填</th>
-                  <th className="px-4 py-3 font-medium">描述</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {Object.keys(properties).length > 0 ? (
-                  Object.entries(properties).map(([key, prop]: [string, any]) => (
-                    <tr key={key} className="hover:bg-white/5 transition-colors">
-                      <td className="px-4 py-3 font-mono text-emerald-400">{key}</td>
-                      <td className="px-4 py-3 text-gray-500">{prop.type}</td>
-                      <td className="px-4 py-3">
-                        {required.includes(key) ? (
-                          <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">REQUIRED</span>
-                        ) : (
-                          <span className="text-[10px] bg-gray-500/20 text-gray-400 px-1.5 py-0.5 rounded">OPTIONAL</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-gray-300">{prop.description || '-'}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500 italic">
-                      无输入参数定义
-                    </td>
-                  </tr>
+          <div className="flex-1 overflow-y-auto py-2">
+            {Object.keys(files).map(fileName => (
+              <button
+                key={fileName}
+                onClick={() => setSelectedFile(fileName)}
+                className={cn(
+                  "w-full flex items-center gap-2 px-4 py-1.5 text-sm transition-colors text-left font-mono",
+                  selectedFile === fileName 
+                    ? "bg-[#37373d] text-white border-l-2 border-emerald-500" 
+                    : "text-gray-400 hover:text-white hover:bg-[#2a2d2e] border-l-2 border-transparent"
                 )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Integration Code Snippet */}
-        <div>
-          <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <Zap className="h-4 w-4 text-yellow-500" /> 调用示例
-          </h3>
-          <div className="bg-[#1e1e1e] rounded-lg p-4 font-mono text-xs text-gray-300 overflow-x-auto border border-white/5">
-            <span className="text-purple-400">const</span> <span className="text-blue-400">result</span> = <span className="text-purple-400">await</span> foundry.skills.<span className="text-yellow-300">execute</span>(<span className="text-green-400">'{skill.name}'</span>, {'{'}
-            {Object.entries(properties).map(([key, prop]: [string, any]) => (
-              <div key={key} className="pl-4">
-                {key}: <span className="text-gray-500">/* {prop.type} {required.includes(key) ? '(required)' : ''} */</span>,
-              </div>
+              >
+                <FileIcon name={fileName} />
+                <span className="truncate">{fileName}</span>
+              </button>
             ))}
-            {'}'});
           </div>
         </div>
 
+        {/* Code Viewer */}
+        <div className="flex-1 flex flex-col bg-[#1e1e1e] min-w-0">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-[#1e1e1e]">
+            <div className="flex items-center gap-2 text-sm text-gray-300 font-mono">
+              <FileIcon name={selectedFile} />
+              {selectedFile}
+            </div>
+            <span className="text-xs text-gray-500 px-2 py-0.5 bg-white/5 rounded">Read-only</span>
+          </div>
+          <div className="flex-1 overflow-auto p-4">
+            <pre className="font-mono text-sm text-gray-300 leading-relaxed whitespace-pre-wrap break-words">
+              {files[selectedFile as keyof typeof files]}
+            </pre>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function FileIcon({ name }: { name: string }) {
+  if (name.endsWith('.md')) return <FileText className="h-4 w-4 text-blue-400 shrink-0" />;
+  if (name.endsWith('.json')) return <FileJson className="h-4 w-4 text-yellow-400 shrink-0" />;
+  if (name.endsWith('.yaml') || name.endsWith('.yml')) return <Settings className="h-4 w-4 text-purple-400 shrink-0" />;
+  if (name.endsWith('.py')) return <FileCode className="h-4 w-4 text-green-400 shrink-0" />;
+  return <File className="h-4 w-4 text-gray-400 shrink-0" />;
 }
 
 function SkillEditor({ skill, onSave, onCancel }: { skill: Skill, onSave: (s: Skill) => void, onCancel: () => void }) {
